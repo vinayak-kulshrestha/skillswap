@@ -1,15 +1,30 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import skillsData from '../data/skills.json'
+import axios from 'axios'
 import SkillCard from '../components/SkillCard'
 
 function Home() {
-  // Pick the first 3 skills as "featured"
-  const featuredSkills = skillsData.slice(0, 3)
+  const [featuredSkills, setFeaturedSkills] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const response = await axios.get('/data/skills.json')
+        setFeaturedSkills(response.data.slice(0, 3))
+      } catch (err) {
+        console.error('Error fetching skills:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeatured()
+  }, [])
 
   return (
     <div className="max-w-6xl mx-auto px-6">
 
-      {/* Hero Section */}
       <section className="py-20 text-center">
         <span className="inline-block px-3 py-1 text-xs font-medium text-slate-700 bg-slate-200 rounded-full mb-6">
           ✨ Trade skills, not money
@@ -41,7 +56,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Featured Skills Section */}
       <section className="py-16">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -56,11 +70,15 @@ function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredSkills.map((skill) => (
-            <SkillCard key={skill.id} skill={skill} />
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-slate-500 text-center py-10">Loading featured skills...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredSkills.map((skill) => (
+              <SkillCard key={skill.id} skill={skill} />
+            ))}
+          </div>
+        )}
       </section>
 
     </div>
