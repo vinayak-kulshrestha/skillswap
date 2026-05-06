@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import SkillCard from '../components/SkillCard'
 
-function Home() {
+function Home({favorites , toggleFavorite}) {
   const [featuredSkills, setFeaturedSkills] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -75,7 +75,12 @@ function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredSkills.map((skill) => (
-              <SkillCard key={skill.id} skill={skill} />
+              <SkillCard 
+              key={skill.id} 
+              skill={skill} 
+              isFavorite={favorites.includes(skill.id)}
+              onToggleFavorite={toggleFavorite}
+              />
             ))}
           </div>
         )}

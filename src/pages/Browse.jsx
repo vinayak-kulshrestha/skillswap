@@ -3,7 +3,7 @@ import axios from 'axios'
 import SkillCard from '../components/SkillCard'
 import SearchBar from '../components/SearchBar'
 
-function Browse() {
+function Browse({ favorites, toggleFavorite }) {
   const [skills, setSkills] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -52,7 +52,7 @@ function Browse() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      <div className="mb-10">
+      <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-900">Browse Skills</h1>
         <p className="mt-2 text-slate-600">
           Explore {skills.length} skills shared by our community
@@ -63,27 +63,29 @@ function Browse() {
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
 
-      {
-        filteredSkills.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-slate-500 text-lg">
-              No skills found matching "{searchQuery}"
-            </p>
-            <p className="text-slate-400 text-sm mt-2">
-              Try a different search term
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSkills.map((skill) => (
-              <SkillCard key={skill.id} skill={skill} />
-            ))}
-          </div>
-        )
-      }
+      {filteredSkills.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-slate-500 text-lg">
+            No skills found matching "{searchQuery}"
+          </p>
+          <p className="text-slate-400 text-sm mt-2">
+            Try a different search term
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredSkills.map((skill) => (
+            <SkillCard
+              key={skill.id}
+              skill={skill}
+              isFavorite={favorites.includes(skill.id)}
+              onToggleFavorite={toggleFavorite}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
-
 }
 
 export default Browse
