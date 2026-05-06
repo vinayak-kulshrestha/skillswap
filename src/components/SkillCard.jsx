@@ -1,11 +1,28 @@
 import { Link } from 'react-router-dom'
 
-function SkillCard({ skill }) {
+function SkillCard({ skill, isFavorite, onToggleFavorite }) {
+  const handleHeartClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onToggleFavorite(skill.id)
+  }
+
   return (
     <Link
       to={`/skill/${skill.id}`}
-      className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative"
     >
+      <button
+        onClick={handleHeartClick}
+        className="absolute top-3 right-3 z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform duration-200"
+      >
+        {isFavorite ? (
+          <span className="text-red-500 text-lg">♥</span>
+        ) : (
+          <span className="text-slate-400 hover:text-red-500 text-lg">♡</span>
+        )}
+      </button>
+
       <div className="aspect-video overflow-hidden bg-slate-100">
         <img
           src={skill.image}

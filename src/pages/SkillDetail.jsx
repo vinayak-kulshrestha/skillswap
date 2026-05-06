@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 
-function SkillDetail() {
+function SkillDetail({ favorites, toggleFavorite }) {
   const { id } = useParams()
 
   const [skill, setSkill] = useState(null)
@@ -56,6 +56,8 @@ function SkillDetail() {
     )
   }
 
+  const isFavorite = favorites.includes(skill.id)
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
 
@@ -65,6 +67,7 @@ function SkillDetail() {
       >
         ← Back to browse
       </Link>
+
       <div className="aspect-video w-full overflow-hidden rounded-2xl bg-slate-100 mb-8">
         <img
           src={skill.image}
@@ -83,9 +86,23 @@ function SkillDetail() {
           </span>
         </div>
 
-        <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
-          {skill.title}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
+            {skill.title}
+          </h1>
+
+          {/* NEW: Favorite button */}
+          <button
+            onClick={() => toggleFavorite(skill.id)}
+            className="shrink-0 w-12 h-12 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform duration-200"
+          >
+            {isFavorite ? (
+              <span className="text-red-500 text-2xl">♥</span>
+            ) : (
+              <span className="text-slate-400 hover:text-red-500 text-2xl">♡</span>
+            )}
+          </button>
+        </div>
 
         <div className="mt-3 flex items-center gap-3 text-sm">
           <span className="text-slate-600">
