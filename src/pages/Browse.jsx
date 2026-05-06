@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import SkillCard from '../components/SkillCard'
+import SearchBar from '../components/SearchBar'
 
 function Browse() {
   const [skills, setSkills] = useState([])
-
   const [loading, setLoading] = useState(true)
-
   const [error, setError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -24,6 +24,15 @@ function Browse() {
 
     fetchSkills()
   }, [])
+
+  const filteredSkills = skills.filter((skill) => {
+    const query = searchQuery.toLowerCase()
+    return (
+      skill.title.toLowerCase().includes(query) ||
+      skill.teacher.toLowerCase().includes(query) ||
+      skill.category.toLowerCase().includes(query)
+    )
+  })
 
   if (loading) {
     return (
@@ -50,13 +59,31 @@ function Browse() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {skills.map((skill) => (
-          <SkillCard key={skill.id} skill={skill} />
-        ))}
+      <div className="mb-8">
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
+
+      {
+        filteredSkills.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-slate-500 text-lg">
+              No skills found matching "{searchQuery}"
+            </p>
+            <p className="text-slate-400 text-sm mt-2">
+              Try a different search term
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSkills.map((skill) => (
+              <SkillCard key={skill.id} skill={skill} />
+            ))}
+          </div>
+        )
+      }
     </div>
   )
+
 }
 
 export default Browse
